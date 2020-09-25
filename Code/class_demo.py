@@ -1,36 +1,77 @@
-from faker import Faker
+"""
+Class and Trees
+"""
+
+# Sometimes you want a object which is more flexible
+jiawei = {"student_id": 1656, "first_name": "jiawei", "last_name": "li", "grade": 100}
+
+# So you create a object, named Student. 
+# In Python it is a common practice to name the class FirstLetterCapitalized.
+class Student:
+    def __init__(self, any_name_id, any_first_name, any_last_name):
+        self.student_id = any_name_id
+        self.first_name = any_first_name
+        self.last_name = any_last_name
+        self.grade = 100
+
+    def __repr__(self):
+        return self.student_id
+
+    def grade_divide_by(self, a_number):
+        return self.grade / a_number
+
+student_0 = Student(77667, "Vivian", "Last")
+print(student_0.grade_divide_by(4))
+
+# Tree
+#         10("any_name")
+#      /       \
+#     5        15
+#    / \       / \
+#   3   8    None None
+
+tree = Tree(10)
+tree.insert(5)
+tree.insert(15)
+tree.insert(8)
+tree.insert(3)
 
 class Node:
-    def __init__(self, key, data):
+    def __init__(self, key):
+        self.key = key
         self.left = None
         self.right = None
+
+    def insert(self, key):
+        if self.left is None:
+            self.left = Node(key)
+        elif self.right is None:
+            self.right = Node(key)
+        else:
+            print("the tree is full.")
+
+# Tree
+class Node:
+    def __init__(self, key, data):
         self.key = key
         self.data = data
+        self.left = None
+        self.right = None
+
+    def insert(self, key, data):
+        if self.key > key and self.left is None:
+            self.left = Node(key, data)
+        elif self.key > key and self.left is not None:
+            self.left.insert(key, data)
+        elif self.key < key and self.right is None:
+            self.right = Node(key, data)
 
     def get(self, key):
         if key == self.key:
             return self.data
-        elif self.left is not None and key < self.key:
-            return self.left.get(key)
-        elif self.right is not None and key > self.key:
-            return self.right.get(key)
-        else:
-            return None
+        if key < self.key:
+            pass
 
-    def insert(self, key, data):
-        if key == self.key:
-            self.data = data
-        elif key < self.key:
-            if self.left is None:
-                self.left = Node(key, data)
-            else:
-                self.left.insert(key, data)
-        else:
-            if self.right is None:
-                self.right = Node(key, data)
-            else:
-                self.right.insert(key, data)
-    
     def display(self):
         lines, *_ = self._display_aux()
         for line in lines:
@@ -81,5 +122,16 @@ class Node:
         lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
 
-def create_tree(n):
-    fake = Faker(["en_US", "en_GB", "it_IT", "de_DE"])
+# Tree
+#         10
+#      /       \
+#     1           15
+#    / \         / \ 
+#  None 3    None    None
+
+root = Node(10, "Vivian")
+root.insert(15, "Jiawei")
+root.insert(1, "Nasim")
+root.insert(3, "Prashant")
+root.display()
+print(root.get(10))
