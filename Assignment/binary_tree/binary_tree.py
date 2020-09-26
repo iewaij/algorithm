@@ -6,7 +6,7 @@ class Node:
         self.right = None
         self.key = key
         self.data = data
-
+    
     def get(self, key):
         if key == self.key:
             return self.data
@@ -80,6 +80,25 @@ class Node:
         zipped_lines = zip(left, right)
         lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
+    
+def add_nodes(a_root, left_list, right_list):
+    n_l = len(left_list)
+    n_r = len(right_list)
+    if n_l == 1 or n_r == 1:
+        for i in left_list+right_list:
+            a_root.insert(i[0],i[1])
+    else:
+        n_l_m = n_l // 2
+        n_r_m = n_r // 2
+        a_root.insert(left_list[n_l_m][0], left_list[n_l_m][1])
+        a_root.insert(right_list[n_r_m][0], right_list[n_r_m][1])
+        add_nodes(a_root, left_list[:n_l_m], left_list[n_l_m+1:])
+        add_nodes(a_root, right_list[:n_r_m], right_list[n_r_m+1:])
 
 def create_tree(n):
-    fake = Faker(["en_US", "en_GB", "it_IT", "de_DE"])
+    fake = Faker(["en_US", "en_GB", "fr_FR", "it_IT", "de_DE"])
+    name_list = [fake.first_name() + " " + fake.last_name() for i in range(n)]
+    key_name_list = list(zip(range(n+1), name_list))
+    n_m = n // 2
+    root = Node(key_name_list[n_m][0], key_name_list[n_m][1])
+    add_nodes(root, key_name_list[:n_m], key_name_list[n_m+1:])
