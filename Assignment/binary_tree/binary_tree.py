@@ -98,7 +98,8 @@ def add_nodes(a_root, left_list, right_list):
 def create_tree(n):
     fake = Faker(["en_US", "en_GB", "fr_FR", "it_IT", "de_DE"])
     name_list = [fake.first_name() + " " + fake.last_name() for i in range(n)]
-    key_name_list = list(zip(range(n+1), name_list))
+    key_name_list = list(zip(range(1, n+1), name_list))
     n_m = n // 2
-    root = Node(key_name_list[n_m][0], key_name_list[n_m][1])
-    add_nodes(root, key_name_list[:n_m], key_name_list[n_m+1:])
+    tree = Node(key_name_list[n_m][0], key_name_list[n_m][1])
+    add_nodes(tree, key_name_list[:n_m], key_name_list[n_m+1:])
+    return tree
