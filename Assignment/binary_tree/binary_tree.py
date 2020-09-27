@@ -12,16 +12,19 @@ authors:
     Nasim Moeindarbari
     Jiawei Li
     Prashant Singh
-date: 26/9/2020
+date: 27/9/2020
 """
 
+from IPython.display import set_matplotlib_formats
 import time
 from faker import Faker
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set_theme(style="darkgrid")
+sns.set_theme(style="white")
+set_matplotlib_formats('retina')
+
 
 class Node:
     def __init__(self, key, data):
@@ -29,7 +32,7 @@ class Node:
         self.right = None
         self.key = key
         self.data = data
-    
+
     def get(self, key):
         if key == self.key:
             return self.data
@@ -53,7 +56,7 @@ class Node:
                 self.right = Node(key, data)
             else:
                 self.right.insert(key, data)
-    
+
     def display(self):
         lines, *_ = self._display_aux()
         for line in lines:
@@ -94,22 +97,26 @@ class Node:
         right, m, q, y = self.right._display_aux()
         s = '%s' % self.key
         u = len(s)
-        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (m - y) * ' '
-        second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
+        first_line = (x + 1) * ' ' + (n - x - 1) * \
+            '_' + s + y * '_' + (m - y) * ' '
+        second_line = x * ' ' + '/' + \
+            (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
         if p < q:
             left += [n * ' '] * (q - p)
         elif q < p:
             right += [m * ' '] * (p - q)
         zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
+        lines = [first_line, second_line] + \
+            [a + u * ' ' + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
+
 
 def add_nodes(a_root, left_list, right_list):
     n_l = len(left_list)
     n_r = len(right_list)
     if n_l == 1 or n_r == 1:
         for i in left_list+right_list:
-            a_root.insert(i.key,i.data)
+            a_root.insert(i.key, i.data)
     else:
         n_l_m = n_l // 2
         n_r_m = n_r // 2
@@ -118,15 +125,18 @@ def add_nodes(a_root, left_list, right_list):
         add_nodes(a_root, left_list[:n_l_m], left_list[n_l_m+1:])
         add_nodes(a_root, right_list[:n_r_m], right_list[n_r_m+1:])
 
+
 def create_tree(n):
     fake = Faker(["en_US", "en_GB", "fr_FR", "it_IT", "de_DE"])
-    node_list = [Node(i, fake.first_name() + " " + fake.last_name()) for i in range(n)]
+    node_list = [Node(i, fake.first_name() + " " + fake.last_name())
+                 for i in range(n)]
     n_m = n // 2
     tree = Node(node_list[n_m].key, node_list[n_m].data)
     add_nodes(tree, node_list[:n_m], node_list[n_m+1:])
     return tree
-    
-def plot_time(start, end, step):
+
+
+def record_complexity(start, end, step):
     size_array = np.arange(start, end, step)
     time_array = np.array([])
     for n in size_array:
@@ -137,7 +147,10 @@ def plot_time(start, end, step):
             tree.get(i)
         end = time.time()
         time_array = np.append(time_array, end - start)
-    complexity_data = pd.DataFrame({"size":size_array, "time":time_array})
-    return sns.lineplot(x = "size", y = "time", data=complexity_data)
+        print("finished:", n)
+    complexity_data = pd.DataFrame({"size": size_array, "time": time_array})
+    return complexity_data
 
-plot = plot_time(10000, 305000, 5000)
+
+complexity_data = record_complexity(10000, 202000, 2000)
+fig = sns.relplot(x="size", y="time", kind="line", data=complexity_data)
