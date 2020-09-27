@@ -1,4 +1,27 @@
+"""
+Implement a Binary Search Tree and measure time complexity of get.
+
+requirements: 
+    faker
+    numpy
+    pandas
+    seaborn
+authors: 
+    Akshat Bharti
+    Vivian Jung-Loddenkemper
+    Nasim Moeindarbari
+    Jiawei Li
+    Prashant Singh
+date: 26/9/2020
+"""
+
+import time
 from faker import Faker
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_theme(style="darkgrid")
 
 class Node:
     def __init__(self, key, data):
@@ -80,26 +103,41 @@ class Node:
         zipped_lines = zip(left, right)
         lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
-    
+
 def add_nodes(a_root, left_list, right_list):
     n_l = len(left_list)
     n_r = len(right_list)
     if n_l == 1 or n_r == 1:
         for i in left_list+right_list:
-            a_root.insert(i[0],i[1])
+            a_root.insert(i.key,i.data)
     else:
         n_l_m = n_l // 2
         n_r_m = n_r // 2
-        a_root.insert(left_list[n_l_m][0], left_list[n_l_m][1])
-        a_root.insert(right_list[n_r_m][0], right_list[n_r_m][1])
+        a_root.insert(left_list[n_l_m].key, left_list[n_l_m].data)
+        a_root.insert(right_list[n_r_m].key, right_list[n_r_m].data)
         add_nodes(a_root, left_list[:n_l_m], left_list[n_l_m+1:])
         add_nodes(a_root, right_list[:n_r_m], right_list[n_r_m+1:])
 
 def create_tree(n):
     fake = Faker(["en_US", "en_GB", "fr_FR", "it_IT", "de_DE"])
-    name_list = [fake.first_name() + " " + fake.last_name() for i in range(n)]
-    key_name_list = list(zip(range(1, n+1), name_list))
+    node_list = [Node(i, fake.first_name() + " " + fake.last_name()) for i in range(n)]
     n_m = n // 2
-    tree = Node(key_name_list[n_m][0], key_name_list[n_m][1])
-    add_nodes(tree, key_name_list[:n_m], key_name_list[n_m+1:])
+    tree = Node(node_list[n_m].key, node_list[n_m].data)
+    add_nodes(tree, node_list[:n_m], node_list[n_m+1:])
     return tree
+    
+def plot_time(start, end, step):
+    size_array = np.arange(start, end, step)
+    time_array = np.array([])
+    for n in size_array:
+        tree = create_tree(n)
+        random_array = np.random.randint(0, n, 1000)
+        start = time.time()
+        for i in random_array:
+            tree.get(i)
+        end = time.time()
+        time_array = np.append(time_array, end - start)
+    complexity_data = pd.DataFrame({"size":size_array, "time":time_array})
+    return sns.lineplot(x = "size", y = "time", data=complexity_data)
+
+plot = plot_time(10000, 305000, 5000)
