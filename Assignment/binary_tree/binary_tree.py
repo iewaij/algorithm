@@ -147,7 +147,6 @@ def record_complexity(end, step):
             tree.get(i)
         end = time.time()
         time_array = np.append(time_array, end - start)
-        print("finished:", n)
     complexity_data = pd.DataFrame({"size": size_array, "time": time_array})
     return complexity_data
 
