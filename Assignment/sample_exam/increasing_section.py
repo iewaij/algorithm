@@ -7,16 +7,18 @@ Narrative: divide the sequence into smaller sequences which have only increasing
 def increasing_section(a_sequence: list[int]) -> list[int]:
     n = len(a_sequence)
     section_list = []
-    tmp_list = []
+    tmp_list = [a_sequence[0]]
     for i in range(1, n):
         e_p = a_sequence[i-1]
         e_i = a_sequence[i]
         if e_i > e_p:
             tmp_list.append(e_i)
-        else:
-            if len(tmp_list) > len(section_list):
-                section_list = tmp_list
+        elif len(tmp_list) > len(section_list):
+            section_list = tmp_list
             tmp_list = [e_i]
+        elif i == n-1 and :
+    if len(tmp_list) > len(section_list):
+                section_list = tmp_list
     return section_list
 
 
