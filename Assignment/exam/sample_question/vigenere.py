@@ -8,12 +8,14 @@ def populate(plaintext: str, key: str) -> str:
 
 def encrypt(plaintext: str, key: str) -> str:
     keystream = populate(plaintext, key)
-    plaintext_ord = [ord(p) for p in plaintext]
     keystream_ord = [ord(k) for k in keystream]
+    plaintext_ord = [ord(p) for p in plaintext]
     cipher_ord = [p+k-65 if p+k-65<=90 else (p+k-65)%90+65 for p, k in zip(plaintext_ord, keystream_ord)]
-    cipher_text = [chr(o) for o in cipher_ord] 
-    return "".join(cipher_text)
-    return cipher_ord
+    cipher_text = "".join([chr(o) for o in cipher_ord])
+    return cipher_text
 
 def decrypt(ciphertext: str, key: str) -> str:
+    keystream = populate(ciphertext, key)
+    keystream_ord = [ord(k) for k in keystream]
+    cipher_ord = [ord(p) for p in ciphertext]
     return plaintext
